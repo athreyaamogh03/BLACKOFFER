@@ -1,8 +1,0 @@
-[filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
-[user]
-	name = AMOGH ATHREYA
-	email = 113500968+athreyaamogh03@users.noreply.github.com
