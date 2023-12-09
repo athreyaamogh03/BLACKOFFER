@@ -1,1 +1,53 @@
+import requests
+from bs4 import BeautifulSoup
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+import matplotlib.pyplot as plt
 
+def get_text_from_url(url):
+    
+    response = requests.get(url)
+
+    
+    if response.status_code == 200:
+        
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        
+        text = ' '.join([p.text for p in soup.find_all('p')])
+
+        return text
+
+    else:
+        print(f'Error: {response.status_code}')
+        return None
+
+def sentiment_analysis(text):
+    
+    sid = SentimentIntensityAnalyzer()
+
+    
+    sentiment_scores = sid.polarity_scores(text)
+
+    return sentiment_scores
+
+def plot_sentiment_scores(sentiment_scores):
+    labels = ['Negative', 'Neutral', 'Positive']
+    sizes = [sentiment_scores['neg'], sentiment_scores['neu'], sentiment_scores['pos']]
+    colors = ['red', 'gray', 'green']
+    explode = (0.1, 0, 0)  
+
+    plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True, startangle=140)
+    plt.axis('equal')  
+    plt.title('Sentiment Analysis')
+    plt.show()
+
+
+url_to_scrape = 'https://insights.blackcoffer.com/rising-it-cities-and-its-impact-on-the-economy-environment-infrastructure-and-city-life-by-the-year-2040-2/'
+text_from_url = get_text_from_url(url_to_scrape)
+
+if text_from_url:
+    sentiment_scores = sentiment_analysis(text_from_url)
+    print("Sentiment Scores:", sentiment_scores)
+
+    
+    plot_sentiment_scores(sentiment_scores)
